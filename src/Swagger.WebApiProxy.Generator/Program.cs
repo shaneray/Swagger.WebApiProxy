@@ -24,6 +24,10 @@ namespace Swagger.WebApiProxy.Generator
                 Console.WriteLine("Please provide the path to the Web Api Assembly.");
                 assemblyFile = Console.ReadLine();
             }
+            else
+            {
+                assemblyFile = args[0];
+            }
 
             if (string.IsNullOrWhiteSpace(assemblyFile))
             {
@@ -47,11 +51,7 @@ namespace Swagger.WebApiProxy.Generator
             }
 
             owinStartupClassType = (Type)startupAttribute.ConstructorArguments.First().Value;
-
-
             Console.WriteLine("Starting in memory server...");
-
-            MethodInfo method = owinStartupClassType.GetMethod("Configuration", new Type[] { typeof(IAppBuilder) });
 
             //TestServer testServer = (TestServer)method.Invoke(null, new object[] { });
             dynamic owinStartupClass = Activator.CreateInstance(owinStartupClassType);
@@ -61,7 +61,7 @@ namespace Swagger.WebApiProxy.Generator
                     owinStartupClass.InMemory = true;
                     owinStartupClass.Configuration(builder);
                 });
-            var getListResponse = testServer.HttpClient.GetAsync("/v2/core/accounts").Result;
+            var getListResponse = testServer.HttpClient.GetAsync("/Core/Account/1229").Result;
             var responseContent = getListResponse.Content.ReadAsStringAsync();
 
             return 0;
